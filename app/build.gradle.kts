@@ -1,8 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
-    //id("com.android.application")
     id("com.google.gms.google-services")
 }
+
+// Redirect build output outside OneDrive to avoid OneDrive file locking and snapshot errors
+layout.buildDirectory.set(file("${System.getProperty("user.home")}/SPM_build/app"))
 
 android {
     namespace = "com.example.smartpantry"
@@ -43,4 +45,5 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     implementation(platform("com.google.firebase:firebase-bom:34.19.0"))
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-auth")
 }
