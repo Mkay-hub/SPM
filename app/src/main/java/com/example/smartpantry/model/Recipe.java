@@ -1,6 +1,7 @@
 package com.example.smartpantry.model;
 
 import com.google.firebase.firestore.DocumentId;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,19 +10,19 @@ import java.util.List;
  * Stored in the "recipes" collection.
  **/
 
-public class Recipe {
+public class Recipe implements Serializable {
 
     private String id;
     private String name;
-    private String steps;
     private List<RecipeIngredient> ingredients = new ArrayList<>();
+    private String steps;
 
-    public Recipe(){}
+    public Recipe() {}
 
-    public Recipe(String name, String steps, List<RecipeIngredient> ingredients){
+    public Recipe(String name, List<RecipeIngredient> ingredients, String steps){
         this.name = name;
-        this.steps = steps;
         this.ingredients = ingredients;
+        this.steps = steps;
     }
 
     @DocumentId
@@ -35,4 +36,5 @@ public class Recipe {
     public void setSteps(String steps){this.steps = steps;}
 
     public List<RecipeIngredient> getIngredients() { return ingredients; }
+    public void setIngredients(List<RecipeIngredient> ingredients) { this.ingredients = ingredients; }
 }

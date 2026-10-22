@@ -1,7 +1,9 @@
 package com.example.smartpantry.model;
 
-/** One ingriedient line inside a recipe **/
-public class RecipeIngredient {
+import java.io.Serializable;
+
+/** One ingredient line inside a recipe **/
+public class RecipeIngredient implements Serializable {
     private String name;
     private double quantity;
     private String unit;
@@ -10,7 +12,7 @@ public class RecipeIngredient {
 
     public RecipeIngredient(String name, double quantity, String unit){
         this.name = name;
-        this.quantity =  quantity;
+        this.quantity = quantity;
         this.unit = unit;
     }
 
@@ -21,5 +23,5 @@ public class RecipeIngredient {
     public void setQuantity(double quantity){this.quantity = quantity;}
 
     public String getUnit(){return unit;}
-    public void setUit(String unit){this.unit = unit;}
+    public void setUnit(String unit){this.unit = unit;}
 }

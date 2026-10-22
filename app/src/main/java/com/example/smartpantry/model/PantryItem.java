@@ -1,16 +1,17 @@
 package com.example.smartpantry.model;
 
 import com.google.firebase.firestore.DocumentId;
+import java.io.Serializable;
 
 /** One ingredient the user has at home.
     Stored as a document in pantry collection
  **/
-public class PantryItem {
+public class PantryItem implements Serializable {
     private String id;      // Firestore document ID; Automatically generated.
     private String name;
     private double quantity;
     private String unit;    // unit of measurement.
-    private String expirydate;      // optional, "yyy-MM-dd" or null
+    private String expirydate;      // optional, "yyyy-MM-dd" or null
 
     public PantryItem(){}
 
@@ -29,7 +30,7 @@ public class PantryItem {
     public void setName(String name){this.name = name;}
 
     public double getQuantity(){return quantity;}
-    public void setQunantity(double quantity){this.quantity =  quantity;}
+    public void setQuantity(double quantity){this.quantity = quantity;}
 
     public String getUnit(){return unit;}
     public void setUnit(String unit){this.unit = unit;}
