@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand Primary Colors -->
+    <color name="primary">#1B5E20</color>
+    <color name="primary_variant">#2E7D32</color>
+    <color name="primary_light">#E8F5E9</color>
+    <color name="primary_container">#DCEDC8</color>
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- Secondary Accent Colors -->
+    <color name="secondary">#E65100</color>
+    <color name="secondary_light">#FFF3E0</color>
+    <color name="on_secondary">#FFFFFF</color>
+
+    <!-- Neutral & Background Colors -->
+    <color name="background">#F8F9FA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F1F5F2</color>
+    <color name="card_stroke">#E0E7E1</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#1A1C1A</color>
+    <color name="text_secondary">#5C635D</color>
+    <color name="text_hint">#8E968F</color>
+
+    <!-- Expiry Alert / Status Colors -->
+    <color name="expiry_red">#C62828</color>
+    <color name="expiry_red_bg">#FFEBEE</color>
+
+    <!-- System Standard -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

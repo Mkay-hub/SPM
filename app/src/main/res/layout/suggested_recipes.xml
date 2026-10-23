@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <!-- Top App Header -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/primary"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/subtitle_recipes"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@string/subtitle_recipes_desc"
+            android:textColor="#D0E8D2"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/contentLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/navBarCard">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSuggestedRecipes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="8dp"
+            android:paddingBottom="140dp"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="false" />
+
+        <!-- Empty State View -->
+        <TextView
+            android:id="@+id/tvEmptyState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="32dp"
+            android:drawablePadding="16dp"
+            android:lineSpacingExtra="4dp"
+            android:text="@string/empty_recipes_msg"
+            android:textColor="@color/text_secondary"
+            android:textSize="15sp"
+            android:visibility="gone"
+            app:drawableTopCompat="@drawable/ic_chef_hat"
+            app:drawableTint="@color/text_hint" />
+
+    </FrameLayout>
+
+    <!-- Bottom Navigation Bar Card Container -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/navBarCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="12dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/card_stroke"
+        app:cardBackgroundColor="@color/surface"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/navBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="6dp"
+            android:paddingHorizontal="4dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNavPantry"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/nav_pantry"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_pantry"
+                app:iconGravity="top"
+                app:iconPadding="2dp"
+                app:iconSize="22dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNavRecipes"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/nav_recipes"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_recipe"
+                app:iconGravity="top"
+                app:iconPadding="2dp"
+                app:iconSize="22dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNavBarSettings"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/nav_settings"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_settings"
+                app:iconGravity="top"
+                app:iconPadding="2dp"
+                app:iconSize="22dp" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
