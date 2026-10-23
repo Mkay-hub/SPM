@@ -14,6 +14,7 @@ import com.example.smartpantry.model.PantryItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryViewHolder> {
 
@@ -73,8 +74,11 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
 
         public void bind(PantryItem item, onPantryItemClickListener listener) {
             tvName.setText(item.getName());
-            String quantityText = item.getQuantity() + " " + item.getUnit();
-            tvQuantity.setText(quantityText);
+
+            double qty = item.getQuantity();
+            String formattedQty = (qty == (long) qty) ? String.format(Locale.US, "%d", (long) qty) : String.valueOf(qty);
+            String quantityText = formattedQty + " " + (item.getUnit() != null ? item.getUnit() : "");
+            tvQuantity.setText(quantityText.trim());
 
             if (item.getExpirydate() != null && !item.getExpirydate().trim().isEmpty()) {
                 tvExpiry.setText("Expires: " + item.getExpirydate());
@@ -88,31 +92,3 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.PantryView
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

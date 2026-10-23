@@ -12,6 +12,8 @@ import com.example.smartpantry.R;
 import com.example.smartpantry.database.PantryRepo;
 import com.example.smartpantry.model.PantryItem;
 
+import java.util.Locale;
+
 public class AddEditPantryActivity extends AppCompatActivity {
 
     public static final String EXTRA_ITEM = "extra_pantry_item";
@@ -37,18 +39,39 @@ public class AddEditPantryActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSave);
 
         // Checks if passing an item for editing via intent
-        if (getIntent().hasExtra(EXTRA_ITEM)) {
-            existingItem = (PantryItem) getIntent().getSerializableExtra(EXTRA_ITEM);
+        if (getIntent() != null && getIntent().hasExtra(EXTRA_ITEM)) {
+            try {
+                existingItem = (PantryItem) getIntent().getSerializableExtra(EXTRA_ITEM);
+            } catch (Exception e) {
+                // Handle deserialization or cast exception
+            }
 
             if (existingItem != null) {
-                tvTitle.setText("Edit Pantry Ingredient");
-                etName.setText(existingItem.getName());
-                etQuantity.setText(String.valueOf(existingItem.getQuantity()));
-                etUnit.setText(existingItem.getUnit());
-                etExpiry.setText(existingItem.getExpirydate());
+                if (tvTitle != null) {
+                    tvTitle.setText(R.string.edit_pantry_ingredient);
+                }
+                if (existingItem.getName() != null) {
+                    etName.setText(existingItem.getName());
+                }
+                etQuantity.setText(formatQuantity(existingItem.getQuantity()));
+                if (existingItem.getUnit() != null) {
+                    etUnit.setText(existingItem.getUnit());
+                }
+                if (existingItem.getExpirydate() != null) {
+                    etExpiry.setText(existingItem.getExpirydate());
+                }
             }
         }
+
         btnSave.setOnClickListener(v -> saveIngredient());
+    }
+
+    private String formatQuantity(double val) {
+        if (val == (long) val) {
+            return String.format(Locale.US, "%d", (long) val);
+        } else {
+            return String.valueOf(val);
+        }
     }
 
     public void saveIngredient() {
@@ -68,6 +91,7 @@ public class AddEditPantryActivity extends AppCompatActivity {
         double quantity = 0;
         if (quantityStr.isEmpty()) {
             etQuantity.setError("Quantity is required");
+            isValid = false;
         } else {
             try {
                 quantity = Double.parseDouble(quantityStr);
@@ -80,11 +104,15 @@ public class AddEditPantryActivity extends AppCompatActivity {
                 isValid = false;
             }
         }
+
         if (unit.isEmpty()) {
-            etUnit.setError("Unit is required ( e.g. pcs, g, cups");
+            etUnit.setError("Unit is required (e.g. pcs, g, cups)");
             isValid = false;
         }
+
         if (!isValid) return; // Stop if inputs are invalid.
+
+        btnSave.setEnabled(false); // Disable during async network call
 
         // Save or update to Firestore
         if (existingItem != null) {
@@ -96,13 +124,14 @@ public class AddEditPantryActivity extends AppCompatActivity {
             pantryRepo.update(existingItem, new PantryRepo.ActionCallBack() {
                 @Override
                 public void onSuccess() {
-                    Toast.makeText(AddEditPantryActivity.this, "Ingredient is updated!", Toast.LENGTH_SHORT).show();
-                    finish(); // Close screen and returns to Ingredient list.
+                    Toast.makeText(AddEditPantryActivity.this, "Ingredient updated!", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    Toast.makeText(AddEditPantryActivity.this, "Error updating item.", Toast.LENGTH_SHORT).show();
+                    btnSave.setEnabled(true);
+                    Toast.makeText(AddEditPantryActivity.this, "Error updating item: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
@@ -111,35 +140,16 @@ public class AddEditPantryActivity extends AppCompatActivity {
             pantryRepo.add(newItem, new PantryRepo.ActionCallBack() {
                 @Override
                 public void onSuccess() {
-                    Toast.makeText(AddEditPantryActivity.this, "Ingredient is saved!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddEditPantryActivity.this, "Ingredient saved!", Toast.LENGTH_SHORT).show();
                     finish();
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    Toast.makeText(AddEditPantryActivity.this, "Error saving item.", Toast.LENGTH_SHORT).show();
+                    btnSave.setEnabled(true);
+                    Toast.makeText(AddEditPantryActivity.this, "Error saving item: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

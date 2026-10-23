@@ -15,7 +15,9 @@ import com.example.smartpantry.MainActivity;
 import com.example.smartpantry.R;
 import com.example.smartpantry.adapter.RecipeAdapter;
 import com.example.smartpantry.database.PantryRepo;
+import com.example.smartpantry.database.PantrySeeder;
 import com.example.smartpantry.database.RecipeRepo;
+import com.example.smartpantry.database.RecipeSeeder;
 import com.example.smartpantry.model.PantryItem;
 import com.example.smartpantry.model.Recipe;
 import com.example.smartpantry.util.RecipeMatcher;
@@ -31,6 +33,9 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.suggested_recipes);
+
+        // Seed default recipes into Cloud Firestore if not already done
+        RecipeSeeder.seedRecipesIfNecessary(this);
 
         rvRecipes = findViewById(R.id.rvSuggestedRecipes);
         tvEmptyState = findViewById(R.id.tvEmptyState);

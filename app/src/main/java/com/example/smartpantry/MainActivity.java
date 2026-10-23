@@ -16,6 +16,8 @@ import com.example.smartpantry.activity.SettingsActivity;
 import com.example.smartpantry.activity.SuggestedRecipesActivity;
 import com.example.smartpantry.adapter.PantryAdapter;
 import com.example.smartpantry.database.PantryRepo;
+import com.example.smartpantry.database.PantrySeeder;
+import com.example.smartpantry.database.RecipeSeeder;
 import com.example.smartpantry.model.PantryItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -23,14 +25,16 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "SPM";
     private PantryAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Inflates screen layout
         setContentView(R.layout.activity_main);
+
+        // Seed default recipes and pantry items into Cloud Firestore if not already done
+        RecipeSeeder.seedRecipesIfNecessary(this);
+        PantrySeeder.seedPantryIfNecessary(this);
 
         // Recycler setup
         RecyclerView rvPantry = findViewById(R.id.rvPantry);
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(AddEditPantryActivity.EXTRA_ITEM, item);
                 startActivity(intent);
             }
+
             @Override
             public void onDeleteClick(PantryItem item) {
                 showDeleteConfirmationDialog(item);
@@ -138,20 +143,5 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
-    }
-
-    private void performDatabaseOperations() {
-        new PantryRepo().add(new PantryItem("Tomatoes", 3, "pcs", ""),
-                new PantryRepo.ActionCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        Log.d(TAG, "Saved to database");
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e(TAG, "Failed to save to database. Please check Firestore Security Rules in Firebase Console.", e);
-                    }
-                });
     }
 }

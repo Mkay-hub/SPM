@@ -25,25 +25,40 @@ public class RecipeDetailActivity extends AppCompatActivity {
         tvIngredients = findViewById(R.id.tvIngredientList);
         tvInstructions = findViewById(R.id.tvInstructions);
 
-        Recipe recipe = (Recipe) getIntent().getSerializableExtra(EXTRA_RECIPE);
+        Recipe recipe = null;
+        if (getIntent() != null && getIntent().hasExtra(EXTRA_RECIPE)) {
+            try {
+                recipe = (Recipe) getIntent().getSerializableExtra(EXTRA_RECIPE);
+            } catch (Exception e) {
+                // handle exception
+            }
+        }
 
         if (recipe != null) {
-            tvTitle.setText(recipe.getName());
+            if (tvTitle != null && recipe.getName() != null) {
+                tvTitle.setText(recipe.getName());
+            }
 
             StringBuilder ingBuilder = new StringBuilder();
             if (recipe.getIngredients() != null) {
                 for (RecipeIngredient ing : recipe.getIngredients()) {
-                    ingBuilder.append("• ")
-                            .append(ing.getName())
-                            .append(" - ")
-                            .append(ing.getQuantity())
-                            .append(" ")
-                            .append(ing.getUnit())
-                            .append("\n");
+                    if (ing != null) {
+                        ingBuilder.append("• ")
+                                .append(ing.getName() != null ? ing.getName() : "")
+                                .append(" - ")
+                                .append(ing.getQuantity())
+                                .append(" ")
+                                .append(ing.getUnit() != null ? ing.getUnit() : "")
+                                .append("\n");
+                    }
                 }
             }
-            tvIngredients.setText(ingBuilder.toString().trim());
-            tvInstructions.setText(recipe.getSteps());
+            if (tvIngredients != null) {
+                tvIngredients.setText(ingBuilder.toString().trim());
+            }
+            if (tvInstructions != null && recipe.getSteps() != null) {
+                tvInstructions.setText(recipe.getSteps());
+            }
         } else {
             Toast.makeText(this, "Error loading recipe details", Toast.LENGTH_SHORT).show();
             finish();
