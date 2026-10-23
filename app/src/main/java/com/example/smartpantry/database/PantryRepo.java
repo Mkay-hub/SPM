@@ -12,7 +12,7 @@ import java.util.List;
 
 public class PantryRepo {
 
-    private static final String COLLECTION = "SPM-System";
+    private static final String COLLECTION = "pantry";
     private final CollectionReference pantry = FirebaseFirestore.getInstance().collection(COLLECTION);
 
     // Async Firestore calls:
@@ -26,7 +26,7 @@ public class PantryRepo {
         void onError(Exception e);
     }
 
-    // Create: Firestore generates the document Id.
+    // Create: Firestore generates the document ID.
     public void add(PantryItem item, ActionCallBack callback){
         pantry.add(item)
                 .addOnSuccessListener(ref -> callback.onSuccess())
@@ -40,14 +40,14 @@ public class PantryRepo {
                 .addOnFailureListener(callback::onError);
     }
 
-    // Update: overwrites the document that has this item's Id.
+    // Update: overwrites the document that has this item's ID.
     public void update(PantryItem item, ActionCallBack callback){
         pantry.document(item.getId()).set(item)
                 .addOnSuccessListener(v->callback.onSuccess())
                 .addOnFailureListener(callback::onError);
     }
 
-    // Delete: removes the document with this Id.
+    // Delete: removes the document with this ID.
     public void delete(String id, ActionCallBack callBack){
         pantry.document(id).delete()
                 .addOnSuccessListener(v->callBack.onSuccess())
