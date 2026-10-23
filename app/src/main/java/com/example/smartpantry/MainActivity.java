@@ -3,6 +3,7 @@ package com.example.smartpantry;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -11,17 +12,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartpantry.activity.AddEditPantryActivity;
+import com.example.smartpantry.activity.SettingsActivity;
+import com.example.smartpantry.activity.SuggestedRecipesActivity;
 import com.example.smartpantry.adapter.PantryAdapter;
 import com.example.smartpantry.database.PantryRepo;
 import com.example.smartpantry.model.PantryItem;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "SPM";
-
     private PantryAdapter adapter;
 
     @Override
@@ -41,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(AddEditPantryActivity.EXTRA_ITEM, item);
                 startActivity(intent);
             }
-
             @Override
             public void onDeleteClick(PantryItem item) {
                 showDeleteConfirmationDialog(item);
@@ -50,7 +51,49 @@ public class MainActivity extends AppCompatActivity {
 
         rvPantry.setAdapter(adapter);
 
+        // FAB to add new ingredient
+        FloatingActionButton fabAdd = findViewById(R.id.fabAdd);
+        if (fabAdd != null) {
+            fabAdd.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, AddEditPantryActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        // Initialize Bottom Navigation Bar
+        initNavigationBar();
+
         loadPantryItems();
+    }
+
+    /*
+        Initializes click listeners for the bottom navigation bar.
+     */
+    private void initNavigationBar() {
+        Button btnPantry = findViewById(R.id.btnNavPantry);
+        Button btnRecipes = findViewById(R.id.btnNavRecipes);
+        Button btnSettings = findViewById(R.id.btnNavBarSettings);
+
+        // Disable current screen's button to signal active state
+        if (btnPantry != null) {
+            btnPantry.setEnabled(false);
+        }
+
+        if (btnRecipes != null) {
+            btnRecipes.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, SuggestedRecipesActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
+            });
+        }
+
+        if (btnSettings != null) {
+            btnSettings.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
+            });
+        }
     }
 
     @Override
@@ -74,41 +117,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Ensure user is signed in (anonymously) before attempting Firestore reads/writes
-    private void ensureAuthenticatedAndInit() {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            Log.d(TAG, "Already authenticated as: " + auth.getCurrentUser().getUid());
-            performDatabaseOperations();
-        } else {
-            auth.signInAnonymously()
-                    .addOnSuccessListener(authResult -> {
-                        String uid = authResult.getUser() != null ? authResult.getUser().getUid() : "anonymous";
-                        Log.d(TAG, "Anonymous auth successful: " + uid);
-                        performDatabaseOperations();
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.w(TAG, "Anonymous auth failed or disabled in Firebase Console. Attempting database operation anyway.", e);
-                        performDatabaseOperations();
-                    });
-        }
-    }
-
-    private void performDatabaseOperations() {
-        new PantryRepo().add(new PantryItem("Tomatoes", 3, "pcs", ""),
-                new PantryRepo.ActionCallBack() {
-                    @Override
-                    public void onSuccess() {
-                        Log.d(TAG, "Saved to database");
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        Log.e(TAG, "Failed to save to database. Please check Firestore Security Rules in Firebase Console.", e);
-                    }
-                });
-    }
-
     private void showDeleteConfirmationDialog(PantryItem item) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Ingredient")
@@ -130,5 +138,20 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    private void performDatabaseOperations() {
+        new PantryRepo().add(new PantryItem("Tomatoes", 3, "pcs", ""),
+                new PantryRepo.ActionCallBack() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "Saved to database");
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(TAG, "Failed to save to database. Please check Firestore Security Rules in Firebase Console.", e);
+                    }
+                });
     }
 }

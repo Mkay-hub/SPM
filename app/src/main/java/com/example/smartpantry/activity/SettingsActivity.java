@@ -1,15 +1,18 @@
 package com.example.smartpantry.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.*;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.smartpantry.MainActivity;
 import com.example.smartpantry.R;
-import com.google.android.material.listitem.SwipeableListItem;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -25,13 +28,13 @@ public class SettingsActivity extends AppCompatActivity {
     private SharedPreferences prefs;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
 
         prefs = getSharedPreferences(PREFS_SETTINGS, Context.MODE_PRIVATE);
 
-        switchExpiry = findViewById(R.id.switchExpirytAlerts);
+        switchExpiry = findViewById(R.id.switchExpiryAlerts);
         rgUnits = findViewById(R.id.rgUnitPreference);
         rbMetric = findViewById(R.id.rbMetric);
         rbImperial = findViewById(R.id.rbImperial);
@@ -42,23 +45,53 @@ public class SettingsActivity extends AppCompatActivity {
         String unitSystem = prefs.getString(KEY_UNIT_SYSTEM, "Metric");
 
         switchExpiry.setChecked(alertEnabled);
-        if ("Imperial". equalsIgnoreCase(unitSystem)){
+        if ("Imperial".equalsIgnoreCase(unitSystem)) {
             rbImperial.setChecked(true);
         } else {
             rbMetric.setChecked(true);
+        }
+
+        btnSave.setOnClickListener(v -> saveSettings());
+
+        initNavigation();
     }
-        btnSave.setOnClickListener(v->saveSettings());
-}
- private void saveSettings(){
-    boolean alertEnabled = switchExpiry.isChecked();
-    String selectedUnit = rbImperial.isChecked() ? "Imperial" : "Metric";
 
-    prefs.edit()
-            .putBoolean(KEY_EXPIRY_ALERTS, alertEnabled)
-            .putString(KEY_UNIT_SYSTEM, selectedUnit)
-            .apply();
+    private void saveSettings() {
+        boolean alertEnabled = switchExpiry.isChecked();
+        String selectedUnit = rbImperial.isChecked() ? "Imperial" : "Metric";
 
-    Toast.makeText(this, "Preferences saved!", Toast.LENGTH_SHORT).show();
-            finish();
+        prefs.edit()
+                .putBoolean(KEY_EXPIRY_ALERTS, alertEnabled)
+                .putString(KEY_UNIT_SYSTEM, selectedUnit)
+                .apply();
+
+        Toast.makeText(this, "Preferences saved!", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    private void initNavigation() {
+        Button btnPantry = findViewById(R.id.btnNavPantry);
+        Button btnRecipes = findViewById(R.id.btnNavRecipes);
+        Button btnSettings = findViewById(R.id.btnNavBarSettings);
+
+        if (btnSettings != null) {
+            btnSettings.setEnabled(false); // Active tab
+        }
+
+        if (btnPantry != null) {
+            btnPantry.setOnClickListener(v -> {
+                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
+            });
+        }
+
+        if (btnRecipes != null) {
+            btnRecipes.setOnClickListener(v -> {
+                Intent intent = new Intent(SettingsActivity.this, SuggestedRecipesActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
+            });
+        }
     }
 }
